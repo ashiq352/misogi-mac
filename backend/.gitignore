@@ -1,0 +1,51 @@
+# Node modules
+node_modules/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+package-lock.json
+
+# Runtime data
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# dotenv environment files
+.env
+.env.*.local
+
+# Build output
+dist/
+build/
+server/
+
+# TypeScript
+*.tsbuildinfo
+
+# misc
+.DS_Store
+*.pem
+
+# IDEs and editors
+.vscode/
+.idea/
+
+# OS-specific
+Thumbs.db
+
+# Coverage reports
+coverage/
+
+# MongoDB dump
+dump/
+
+# Optional: ignore uploaded files or temporary storage
+uploads/
+temp/
+tmp/
