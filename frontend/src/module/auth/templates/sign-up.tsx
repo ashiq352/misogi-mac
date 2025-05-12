@@ -10,27 +10,31 @@ import { setCookies } from "@/lib/cookies";
 import { USER_ROLE } from "@/enums";
 import { routes } from "@/config/routes";
 
-export default function SignIn() {
+export default function SignUp() {
   const router = useRouter();
-
-  const { useLogin } = useAuthAPI();
-  const loginMutation = useLogin();
+  const { useRegister } = useAuthAPI();
+  const registerMutation = useRegister();
 
   const formik = useFormik({
-    initialValues: { email: "", password: "" },
+    initialValues: {
+      email: "",
+      fullName: "",
+      password: "",
+      role: USER_ROLE.ARTIST,
+    },
     validationSchema: Yup.object({
       email: Yup.string().email("Invalid email").required("Email is required"),
+      fullName: Yup.string().required("Full name is required"),
       password: Yup.string()
         .min(6, "Minimum 6 characters")
         .required("Password is required"),
+      role: Yup.mixed().oneOf(Object.values(USER_ROLE)),
     }),
     onSubmit: (values, { setSubmitting, setErrors }) => {
-      loginMutation.mutate(values, {
+      registerMutation.mutate(values, {
         onSuccess: (res) => {
-          // set cookies
           setCookies({ token: res.token, user: { role: res.user.role } });
 
-          // redirect based on role
           if (res.user.role === USER_ROLE.ARTIST) {
             router.push(routes.artist.dashboard);
           } else if (res.user.role === USER_ROLE.CURATOR) {
@@ -40,7 +44,7 @@ export default function SignIn() {
           }
         },
         onError: () => {
-          setErrors({ email: "Invalid credentials" });
+          setErrors({ email: "Account already exists" });
           setSubmitting(false);
         },
       });
@@ -49,7 +53,7 @@ export default function SignIn() {
 
   return (
     <div className="max-w-md mx-auto mt-10">
-      <h1 className="text-2xl font-bold mb-6">Sign In</h1>
+      <h1 className="text-2xl font-bold mb-6">Sign Up</h1>
       <form onSubmit={formik.handleSubmit}>
         <TextInput
           id="email"
@@ -59,6 +63,13 @@ export default function SignIn() {
           error={formik.errors.email}
         />
         <TextInput
+          id="fullName"
+          label="Full Name"
+          value={formik.values.fullName}
+          onChange={formik.handleChange}
+          error={formik.errors.fullName}
+        />
+        <TextInput
           id="password"
           label="Password"
           type="password"
@@ -66,8 +77,23 @@ export default function SignIn() {
           onChange={formik.handleChange}
           error={formik.errors.password}
         />
+        <div className="mb-4">
+          <label className="block text-sm font-medium mb-1">Role</label>
+          <select
+            name="role"
+            value={formik.values.role}
+            onChange={formik.handleChange}
+            className="w-full border rounded-md px-3 py-2 text-sm"
+          >
+            <option value={USER_ROLE.ARTIST}>Artist</option>
+            <option value={USER_ROLE.CURATOR}>Curator</option>
+          </select>
+          {formik.errors.role && (
+            <p className="text-red-500 text-sm mt-1">{formik.errors.role}</p>
+          )}
+        </div>
         <Button type="submit" disabled={formik.isSubmitting}>
-          {formik.isSubmitting ? "Signing in..." : "Sign In"}
+          {formik.isSubmitting ? "Signing up..." : "Sign Up"}
         </Button>
       </form>
     </div>
