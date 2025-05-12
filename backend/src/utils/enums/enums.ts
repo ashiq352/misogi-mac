@@ -1,0 +1,21 @@
+export enum USER_ROLE {
+  ARTIST = "ARTIST",
+  CURATOR = "CURATOR",
+}
+
+export enum STATUS {
+  ACTIVE = "ACTIVE",
+  INACTIVE = "INACTIVE",
+  DELETED = "DELETED",
+}
+
+export enum ARTWORK_STATUS {
+  PENDING = "PENDING",
+  APPROVED = "APPROVED",
+  REJECTED = "REJECTED",
+}
+
+export enum INTERACTION_TYPE {
+  VIEW = "VIEW",
+  LIKE = "LIKE",
+}
