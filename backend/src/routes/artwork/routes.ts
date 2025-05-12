@@ -124,7 +124,7 @@ export class ArtworkRoutes {
 
   public static approve = async (req: AuthenticatedRequest, res: Response) => {
     const validator = new Validator(req.body, {
-      tags: "required|array|min:1",
+      tags: "required|array",
     });
 
     const matched = await validator.check();
