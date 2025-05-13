@@ -1,16 +1,19 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useParams } from "next/navigation";
 import { useState } from "react";
 import ArtworkModal from "./ArtworkModal";
 import { useGalleryAPI } from "../hooks/useGalleryAPI";
+import { Modal } from "@/components/modal";
+import { useModalStore } from "@/store/use-modal-store";
 
 export default function GalleryDetail() {
   const { id } = useParams();
   const { useGalleryById } = useGalleryAPI();
   const { data: gallery, isLoading } = useGalleryById(id as string);
 
-  const [activeArtwork, setActiveArtwork] = useState(null);
+  const [activeArtwork, setActiveArtwork] = useState<any | null>(null);
 
   if (isLoading) return <p className="p-6">Loading gallery...</p>;
   if (!gallery) return <p className="p-6 text-red-500">Gallery not found</p>;
@@ -22,48 +25,52 @@ export default function GalleryDetail() {
         <p className="text-gray-600 mb-4">{gallery.description}</p>
       )}
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-        {gallery.artworkRefs.map(
-          (
-            artwork: any
-            //     {
-            //     _id: string;
-            //     title: string;
-            //     medium: string;
-            //     artistRef: { fullName: string };
-            //   }
-          ) => (
-            <div
-              key={artwork._id}
-              className="cursor-pointer border rounded shadow-sm bg-white hover:shadow"
-              onClick={() => setActiveArtwork(artwork)}
-            >
-              <img
-                src={artwork.imageUrl}
-                alt={artwork.title}
-                className="w-full h-48 object-cover rounded-t"
-              />
-              <div className="p-3">
-                <h3 className="font-medium">{artwork.title}</h3>
-                <p className="text-sm text-gray-500">{artwork.medium}</p>
-                <p className="text-sm text-gray-500 italic">
-                  by {artwork.artistRef?.fullName || "Unknown Artist"}
-                </p>
-              </div>
+      <div className="flex flex-wrap gap-6">
+        {gallery.artworkRefs.map((artwork: any) => (
+          <div
+            key={artwork._id}
+            className="w-full sm:w-[calc(50%-0.75rem)] md:w-[calc(33.333%-1rem)] lg:w-[calc(25%-1rem)]
+              cursor-pointer border rounded shadow-sm bg-white hover:shadow transition"
+            onClick={() => {
+              setActiveArtwork(artwork);
+              useModalStore.getState().openModal("artwork-preview");
+            }}
+          >
+            <img
+              src={artwork.imageUrl}
+              alt={artwork.title}
+              className="w-full h-48 object-cover rounded-t"
+            />
+            <div className="p-3">
+              <h3 className="font-medium">{artwork.title}</h3>
+              <p className="text-sm text-gray-500">{artwork.medium}</p>
+              <p className="text-sm text-gray-500 italic">
+                by {artwork.artistRef?.fullName || "Unknown Artist"}
+              </p>
             </div>
-          )
-        )}
+          </div>
+        ))}
       </div>
 
       {activeArtwork && (
-        <ArtworkModal
-          artwork={activeArtwork}
+        <Modal
+          modalId="artwork-preview"
           onClose={() => setActiveArtwork(null)}
-          onLike={function (): void {
-            throw new Error("Function not implemented.");
-          }}
-          hasLiked={false}
-        />
+          title={activeArtwork?.title}
+          width="max-w-4xl"
+        >
+          <ArtworkModal
+            artwork={{
+              _id: activeArtwork._id,
+              title: activeArtwork.title,
+              imageUrl: activeArtwork.imageUrl,
+              medium: activeArtwork.medium,
+              dimensions: activeArtwork.dimensions,
+              artistRef: activeArtwork.artistRef,
+            }}
+            onClose={() => setActiveArtwork(null)}
+          />
+        </Modal>
       )}
     </div>
   );
