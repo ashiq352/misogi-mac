@@ -1,65 +1,105 @@
-"use client";
+import { useEffect, useState } from "react";
 
-import { useState } from "react";
-import { Label } from "@/components/ui/label";
-import { TextInput } from "@/components/form/TextInput";
+type FilterState = {
+  search: string;
+  tag: string;
+  medium: string;
+  artist: string;
+};
 
-export default function FilterPanel() {
-  const [selectedTag, setSelectedTag] = useState("");
-  const [selectedMedium, setSelectedMedium] = useState("");
-  const [artistName, setArtistName] = useState("");
+export default function FilterPanel({
+  filters,
+  setFilters,
+  tagOptions,
+  mediumOptions,
+  artistOptions,
+}: {
+  filters: FilterState;
+  setFilters: (f: FilterState) => void;
+  tagOptions: string[];
+  mediumOptions: string[];
+  artistOptions: string[];
+}) {
+  const [searchInput, setSearchInput] = useState(filters.search);
+
+  useEffect(() => {
+    const delay = setTimeout(() => {
+      setFilters({ ...filters, search: searchInput });
+    }, 300);
+
+    return () => clearTimeout(delay);
+  }, [searchInput]);
 
   return (
-    <div className="bg-white border rounded-lg p-4 shadow-sm mb-6">
-      <h3 className="text-lg font-semibold mb-4">Filter Artworks</h3>
+    <div className="space-y-3 mb-6">
+      <input
+        className={`px-3 py-2 rounded w-full border ${
+          searchInput ? "border-blue-500" : "border-gray-300"
+        }`}
+        placeholder="Search by gallery name"
+        value={filters.search}
+        onChange={(e) => setSearchInput(e.target.value)}
+      />
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {/* Style/Tag Filter */}
-        <div>
-          <Label htmlFor="tag">Style (Tag)</Label>
-          <select
-            id="tag"
-            value={selectedTag}
-            onChange={(e) => setSelectedTag(e.target.value)}
-            className="w-full mt-1 border border-gray-300 rounded px-3 py-2"
-          >
-            <option value="">All Styles</option>
-            <option value="Abstract">Abstract</option>
-            <option value="Portrait">Portrait</option>
-            <option value="Landscape">Landscape</option>
-            <option value="Conceptual">Conceptual</option>
-          </select>
-        </div>
+      <select
+        className={`px-3 py-2 rounded w-full border ${
+          filters.tag ? "border-blue-500" : "border-gray-300"
+        }`}
+        value={filters.tag}
+        onChange={(e) => setFilters({ ...filters, tag: e.target.value })}
+      >
+        <option value="">Filter by tag</option>
+        {tagOptions.map((tag) => (
+          <option key={tag} value={tag}>
+            {tag}
+          </option>
+        ))}
+      </select>
 
-        {/* Medium Filter */}
-        <div>
-          <Label htmlFor="medium">Medium</Label>
-          <select
-            id="medium"
-            value={selectedMedium}
-            onChange={(e) => setSelectedMedium(e.target.value)}
-            className="w-full mt-1 border border-gray-300 rounded px-3 py-2"
-          >
-            <option value="">All Mediums</option>
-            <option value="Oil">Oil</option>
-            <option value="Watercolor">Watercolor</option>
-            <option value="Digital">Digital</option>
-            <option value="Acrylic">Acrylic</option>
-          </select>
-        </div>
+      <select
+        className={`px-3 py-2 rounded w-full border ${
+          filters.tag ? "border-blue-500" : "border-gray-300"
+        }`}
+        value={filters.medium}
+        onChange={(e) => setFilters({ ...filters, medium: e.target.value })}
+      >
+        <option value="">Filter by medium</option>
+        {mediumOptions.map((m) => (
+          <option key={m} value={m}>
+            {m}
+          </option>
+        ))}
+      </select>
 
-        {/* Artist Filter */}
-        <div>
-          <Label htmlFor="artistName">Artist</Label>
-          <TextInput
-            id="artistName"
-            label=""
-            placeholder="Search by artist"
-            value={artistName}
-            onChange={(e) => setArtistName(e.target.value)}
-          />
-        </div>
-      </div>
+      <select
+        className={`px-3 py-2 rounded w-full border ${
+          filters.tag ? "border-blue-500" : "border-gray-300"
+        }`}
+        value={filters.artist}
+        onChange={(e) => setFilters({ ...filters, artist: e.target.value })}
+      >
+        <option value="">Filter by artist</option>
+        {artistOptions.map((a) => (
+          <option key={a} value={a}>
+            {a}
+          </option>
+        ))}
+      </select>
+      {filters.search || filters.tag || filters.medium || filters.artist ? (
+        <button
+          className="text-sm text-blue-600 hover:underline"
+          onClick={() =>
+            setFilters({
+              search: "",
+              tag: "",
+              medium: "",
+              artist: "",
+            })
+          }
+        >
+          Clear all filters
+        </button>
+      ) : null}
     </div>
   );
 }

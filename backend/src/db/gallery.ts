@@ -22,6 +22,8 @@ const GallerySchema = new mongoose.Schema<IGalleryDocument>(
   { timestamps: true }
 );
 
+GallerySchema.index({ name: "text", description: "text" });
+
 export const Gallery = mongoose.model<IGalleryDocument>(
   "Gallery",
   GallerySchema

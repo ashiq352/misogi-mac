@@ -7,6 +7,8 @@ import {
   ErrorResponse,
   SuccessResponse,
 } from "../../utils/helpers/apiResponse";
+import { ARTWORK_STATUS } from "../../utils/enums/enums";
+import { Artwork } from "../../db/artwork";
 
 export class GalleryRoutes {
   public static create = async (req: AuthenticatedRequest, res: Response) => {
@@ -24,6 +26,17 @@ export class GalleryRoutes {
     }
 
     const { name, description, artworkRefs } = req.body;
+
+    const artworks = await Artwork.find({
+      _id: { $in: artworkRefs },
+      status: ARTWORK_STATUS.APPROVED,
+    });
+
+    if (artworks.length !== artworkRefs.length) {
+      return ErrorResponse(res, status.BAD_REQUEST, {
+        message: "Only approved artworks can be added to a gallery.",
+      });
+    }
 
     const gallery = await GalleryHelpers.createGallery({
       name,

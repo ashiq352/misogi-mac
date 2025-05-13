@@ -15,6 +15,12 @@ export class GalleryHelpers {
   };
 
   public static getGalleryById = async (id: string) => {
-    return Gallery.findById(id).populate("artworkRefs");
+    return Gallery.findById(id).populate({
+      path: "artworkRefs",
+      populate: {
+        path: "artistRef",
+        select: "fullName",
+      },
+    });
   };
 }

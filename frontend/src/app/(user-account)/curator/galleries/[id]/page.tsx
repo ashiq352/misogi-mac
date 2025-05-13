@@ -1,4 +1,4 @@
-import GalleryDetail from "@/module/galleries/components/GalleryDetails";
+import GalleryDetail from "@/module/galleries/templates/GalleryDetail";
 
 export default function GalleryDetailPage() {
   return <GalleryDetail />;

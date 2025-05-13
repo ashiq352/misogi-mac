@@ -1,33 +1,29 @@
 import Link from "next/link";
-
-interface GalleryCardProps {
-  id: string;
-  name: string;
-  coverImage: string;
-  artworkCount: number;
-  createdAt: string;
-}
+import { GalleryCardProps } from "../types";
 
 export default function GalleryCard({
-  id,
+  _id,
   name,
-  coverImage,
   artworkCount,
-  createdAt,
+  thumbnailUrl,
 }: GalleryCardProps) {
   return (
-    <Link href={`/galleries/${id}`}>
-      <div className="border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition bg-white">
-        <img
-          src={coverImage}
-          alt={name}
-          className="w-full h-48 object-cover"
-        />
+    <Link href={`/galleries/${_id}`}>
+      <div className="border rounded-lg shadow hover:shadow-md transition cursor-pointer bg-white">
+        {thumbnailUrl ? (
+          <img
+            src={thumbnailUrl}
+            alt={name}
+            className="w-full h-48 object-cover rounded-t-lg"
+          />
+        ) : (
+          <div className="w-full h-48 bg-gray-100 flex items-center justify-center text-gray-400">
+            No Image
+          </div>
+        )}
         <div className="p-4">
-          <h3 className="text-lg font-semibold">{name}</h3>
-          <p className="text-sm text-gray-500">
-            {artworkCount} artworks · {new Date(createdAt).toLocaleDateString()}
-          </p>
+          <h3 className="font-semibold text-lg">{name}</h3>
+          <p className="text-sm text-gray-500">{artworkCount} artworks</p>
         </div>
       </div>
     </Link>

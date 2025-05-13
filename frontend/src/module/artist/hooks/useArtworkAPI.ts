@@ -43,10 +43,20 @@ export const useArtworkAPI = () => {
       },
     });
 
+    const useApprovedArtworks = () =>
+      useQuery({
+        queryKey: ["approved-artworks"],
+        queryFn: async () => {
+          const res = await api.get(`${API_AUTH_URL}/approved`);
+          return res.data?.data;
+        },
+      });
+
   return {
     useUploadArtwork,
     useMyArtworks,
     useUpdateArtwork,
     useDeleteArtwork,
+    useApprovedArtworks,
   };
 };

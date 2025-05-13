@@ -22,6 +22,7 @@ export const routes = {
   // Curator
   curator: {
     dashboard: "/curator/dashboard",
+    createGallery: "/curator/galleries/create",
     reviewQueue: "/curator/review",
     reviewArtwork: (id: string) => `/curator/review/${id}`,
     galleries: "/curator/galleries",

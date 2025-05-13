@@ -217,4 +217,13 @@ export class ArtworkRoutes {
       data: artwork,
     });
   };
+  public static getApproved = async (_req: Request, res: Response) => {
+    const artworks = await Artwork.find({ status: ARTWORK_STATUS.APPROVED })
+      .populate("tags", "name")
+      .populate("artistRef", "fullName");
+
+    return SuccessResponse(res, status.OK, {
+      data: artworks,
+    });
+  };
 }

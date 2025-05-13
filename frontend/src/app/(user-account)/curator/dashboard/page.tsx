@@ -8,6 +8,8 @@ import { useTagAPI } from "@/module/tags/hooks/useTagAPI";
 import { IArtworkCard } from "@/module/artist/types";
 import toast from "react-hot-toast";
 import CreatableSelect from "react-select/creatable";
+import { useRouter } from "next/navigation";
+import { routes } from "@/config/routes";
 
 type TagOption = {
   label: string;
@@ -15,6 +17,7 @@ type TagOption = {
 };
 
 export default function CuratorDashboard() {
+  const router = useRouter();
   const { usePendingArtworks, useApproveArtwork, useRejectArtwork } =
     useCuratorAPI();
   const { useAllTags, useCreateTag } = useTagAPI();
@@ -195,6 +198,7 @@ export default function CuratorDashboard() {
           ))}
         </div>
       )}
+      <Button className="w-2/12 red" onClick={() => router.push(routes.curator.createGallery)}>Create Gallery Page</Button>
     </div>
   );
 }
