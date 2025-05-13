@@ -6,8 +6,8 @@ A full-stack web application that enables **artists** to submit artworks, **cura
 
 ## 🌐 Live URLs
 
-* Frontend: [https://your-frontend-url.com](https://your-frontend-url.com)
-* Backend API: [https://your-backend-api.com](https://your-backend-api.com)
+* Frontend: [https://misogi-mac-wy1x.vercel.app/signin](https://misogi-mac-wy1x.vercel.app/signin)
+* Backend API: [https://misogi-mac.onrender.com/api](https://misogi-mac.onrender.com/api)
 
 ---
 
