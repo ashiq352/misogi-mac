@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 
 interface ArtworkModalProps {
@@ -12,16 +11,16 @@ interface ArtworkModalProps {
     likes: number;
   };
   onClose: () => void;
+  onLike: () => void;
+  hasLiked: boolean;
 }
 
-export default function ArtworkModal({ artwork, onClose }: ArtworkModalProps) {
-  const [likes, setLikes] = useState(artwork.likes);
-
-  const handleLike = () => {
-    setLikes((prev) => prev + 1);
-    // 🔜 Save to localStorage or send to API later
-  };
-
+export default function ArtworkModal({
+  artwork,
+  onClose,
+  onLike,
+  hasLiked,
+}: ArtworkModalProps) {
   const handleShare = async () => {
     const url = `${window.location.origin}/artwork/${artwork.id}`;
     await navigator.clipboard.writeText(url);
@@ -53,7 +52,9 @@ export default function ArtworkModal({ artwork, onClose }: ArtworkModalProps) {
             </p>
 
             <div className="flex items-center gap-3 mt-4">
-              <Button onClick={handleLike}>👍 {likes}</Button>
+              <Button onClick={onLike} disabled={hasLiked}>
+                👍 {artwork.likes}
+              </Button>
               <Button variant="outline" onClick={handleShare}>
                 🔗 Share
               </Button>

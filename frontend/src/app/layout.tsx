@@ -1,6 +1,8 @@
+import "@/app/globals.css";
 import { Inter } from "next/font/google";
 import { cn } from "@/lib/utils";
 import Provider from "@/components/providers/query-client-provider";
+import { Toaster } from "react-hot-toast";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -24,10 +26,11 @@ export default function RootLayout({
       >
         <Provider>
           <main className="min-h-screen flex flex-col">
-            <header className="w-full border-b px-6 py-4 bg-white shadow-sm">
-              <h1 className="text-lg font-bold">ArtShow</h1>
-            </header>
-            <section className="flex-1 container py-10">{children}</section>
+            <section className="flex-1 flex items-center justify-center text-center px-4">
+              {children}
+              <Toaster />
+            </section>
+
             <footer className="w-full border-t px-6 py-4 text-sm text-center text-muted-foreground bg-white">
               © {new Date().getFullYear()} MisogiAI ArtShow
             </footer>

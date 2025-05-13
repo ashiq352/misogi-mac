@@ -1,20 +1,43 @@
 "use client";
 
-interface ArtworkCardProps {
+import toast from "react-hot-toast";
+import { useArtworkAPI } from "../hooks/useArtworkAPI";
+import { Button } from "@/components/ui/button";
+
+export interface ArtworkCardProps {
+  id: string;
   title: string;
   medium: string;
   imageUrl: string;
   status: "PENDING" | "APPROVED" | "REJECTED";
   feedback?: string;
+  refetch: () => void;
 }
 
 export default function ArtworkCard({
+  id,
   title,
   medium,
   imageUrl,
   status,
   feedback,
+  refetch,
 }: ArtworkCardProps) {
+  const { useDeleteArtwork } = useArtworkAPI();
+  const deleteMutation = useDeleteArtwork();
+
+  const handleDelete = () => {
+    deleteMutation.mutate(id, {
+      onSuccess: () => {
+        toast.success("Artwork deleted.");
+        refetch();
+      },
+      onError: () => {
+        toast.error("Failed to delete artwork.");
+      },
+    });
+  };
+
   const statusColor = {
     PENDING: "text-yellow-500",
     APPROVED: "text-green-600",
@@ -35,6 +58,20 @@ export default function ArtworkCard({
         <p className="text-sm mt-2 text-gray-700 italic">
           Feedback: {feedback}
         </p>
+      )}
+      {status === "PENDING" && (
+        <div className="flex gap-2 mt-3">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => toast("Edit flow not yet connected")}
+          >
+            Edit
+          </Button>
+          <Button variant="destructive" size="sm" onClick={handleDelete}>
+            Delete
+          </Button>
+        </div>
       )}
     </div>
   );

@@ -14,7 +14,8 @@ export const routes = {
   artist: {
     dashboard: "/artist/dashboard",
     artworks: "/artist/artworks",
-    newArtwork: "/artist/artworks/new",
+    newArtwork: "/artist/upload",
+    submissions: "/artist/submissions",
     editArtwork: (id: string) => `/artist/artworks/${id}/edit`,
   },
 

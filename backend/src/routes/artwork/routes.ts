@@ -10,6 +10,7 @@ import {
 } from "../../utils/helpers/apiResponse";
 import { Artwork } from "../../db/artwork";
 import mongoose from "mongoose";
+import { Tag } from "../../db/tag";
 
 export class ArtworkRoutes {
   public static create = async (req: AuthenticatedRequest, res: Response) => {
@@ -125,6 +126,7 @@ export class ArtworkRoutes {
   public static approve = async (req: AuthenticatedRequest, res: Response) => {
     const validator = new Validator(req.body, {
       tags: "required|array",
+      feedback: "required|string",
     });
 
     const matched = await validator.check();
@@ -136,15 +138,23 @@ export class ArtworkRoutes {
     }
 
     const { id } = req.params;
-    const { tags } = req.body;
+    const { tags, feedback } = req.body;
+
+    // Create or find tag documents
+    const tagDocs = await Promise.all(
+      tags.map((name: string) =>
+        Tag.findOneAndUpdate({ name }, { name }, { new: true, upsert: true })
+      )
+    );
+    const tagIds = tagDocs.map((tag) => tag._id);
 
     const artwork = await Artwork.findByIdAndUpdate(
       id,
       {
         status: ARTWORK_STATUS.APPROVED,
-        tags,
+        tags: tagIds,
+        feedback,
         approvedBy: req.user!._id,
-        feedback: "",
       },
       { new: true }
     );
@@ -163,6 +173,7 @@ export class ArtworkRoutes {
 
   public static reject = async (req: AuthenticatedRequest, res: Response) => {
     const validator = new Validator(req.body, {
+      tags: "required|array",
       feedback: "required|string",
     });
 
@@ -175,12 +186,20 @@ export class ArtworkRoutes {
     }
 
     const { id } = req.params;
-    const { feedback } = req.body;
+    const { tags, feedback } = req.body;
+
+    const tagDocs = await Promise.all(
+      tags.map((name: string) =>
+        Tag.findOneAndUpdate({ name }, { name }, { new: true, upsert: true })
+      )
+    );
+    const tagIds = tagDocs.map((tag) => tag._id);
 
     const artwork = await Artwork.findByIdAndUpdate(
       id,
       {
         status: ARTWORK_STATUS.REJECTED,
+        tags: tagIds,
         feedback,
         approvedBy: req.user!._id,
       },

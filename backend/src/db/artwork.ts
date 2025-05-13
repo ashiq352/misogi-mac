@@ -17,6 +17,7 @@ export interface IArtworkDocument extends mongoose.Document {
   approvedBy?: mongoose.Types.ObjectId;
   views: number;
   likes: number;
+  artistName?: string;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -39,6 +40,7 @@ const ArtworkSchema = new mongoose.Schema<IArtworkDocument>(
     approvedBy: { type: ObjectId, ref: "User" },
     views: { type: Number, default: 0 },
     likes: { type: Number, default: 0 },
+    artistName: { type: String },
   },
   {
     timestamps: true,
@@ -46,6 +48,18 @@ const ArtworkSchema = new mongoose.Schema<IArtworkDocument>(
     toJSON: { virtuals: true },
   }
 );
+
+ArtworkSchema.virtual("artist", {
+  ref: "User",
+  localField: "artistRef",
+  foreignField: "_id",
+  justOne: true,
+});
+
+ArtworkSchema.index({ title: "text", description: "text" }); // for search
+ArtworkSchema.index({ medium: 1 }); // filter by medium
+ArtworkSchema.index({ tags: 1 }); // filter by tag
+ArtworkSchema.index({ artistRef: 1 }); // filter by artist
 
 export const Artwork = mongoose.model<IArtworkDocument>(
   "Artwork",

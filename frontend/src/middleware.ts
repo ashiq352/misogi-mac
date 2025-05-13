@@ -56,10 +56,26 @@ export function middleware(request: NextRequest) {
   // Require auth for artist/curator protected pages
   const isProtected = path.startsWith("/artist") || path.startsWith("/curator");
 
-  if (isProtected && !token) {
-    const url = request.nextUrl.clone();
-    url.pathname = routes.signIn;
-    return NextResponse.redirect(url);
+  if (isProtected) {
+    if (!token) {
+      const url = request.nextUrl.clone();
+      url.pathname = routes.signIn;
+      return NextResponse.redirect(url);
+    }
+
+    // Prevent ARTIST from accessing curator pages
+    if (path.startsWith("/curator") && userType === USER_ROLE.ARTIST) {
+      return NextResponse.redirect(
+        new URL(routes.artist.dashboard, request.url)
+      );
+    }
+
+    // Prevent CURATOR from accessing artist pages
+    if (path.startsWith("/artist") && userType === USER_ROLE.CURATOR) {
+      return NextResponse.redirect(
+        new URL(routes.curator.dashboard, request.url)
+      );
+    }
   }
 
   return NextResponse.next();
