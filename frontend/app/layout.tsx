@@ -1,4 +1,4 @@
-import "@/app/globals.css";
+import "./globals.css";
 import { Inter } from "next/font/google";
 import { cn } from "@/lib/utils";
 import Provider from "@/components/providers/query-client-provider";
